@@ -24,7 +24,7 @@ def parse_args(args=None):
     parser.add_argument('--type',           required=True,              choices=['rnn', 'transformer'],     help='Type of model to train')
     parser.add_argument('--task',           required=True,              choices=['train', 'test', 'both'],  help='Task to run')
     parser.add_argument('--data',           required=True,              help='File path to the assignment data file.')
-    parser.add_argument('--epochs',         type=int,   default=3,      help='Number of epochs used in training.')
+    parser.add_argument('--epochs',         type=int,   default=4,      help='Number of epochs used in training.')
     parser.add_argument('--lr',             type=float, default=1e-3,   help='Model\'s learning rate')
     parser.add_argument('--optimizer',      type=str,   default='adam', choices=['adam', 'rmsprop', 'sgd'], help='Model\'s optimizer')
     parser.add_argument('--batch_size',     type=int,   default=100,    help='Model\'s batch size.')

@@ -13,7 +13,7 @@ class RNNDecoder(tf.keras.layers.Layer):
         self.vocab_size  = vocab_size
         self.hidden_size = hidden_size
         self.window_size = window_size
-        self.embed_size = 64
+        self.embed_size = 32
 
         # TODO:
         # Now we will define image and word embedding, decoder, and classification layers
@@ -21,23 +21,22 @@ class RNNDecoder(tf.keras.layers.Layer):
         # Define feed forward layer(s) to embed image features into a vector 
         # with the models hidden size
         self.image_embedding = tf.keras.Sequential([
-            tf.keras.layers.Dense(self.hidden_size, activation='relu'), 
-            tf.keras.layers.Dense(self.hidden_size, activation='relu')
-            ])
+            tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
+            tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu)])
 
         # Define english embedding layer:
         self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embed_size)
 
         # Define decoder layer that handles language and image context:     
-        self.decoder = tf.keras.layers.GRU(units=self.hidden_size, return_sequences=True,
-                                            return_state=False)
+        self.decoder = tf.keras.layers.GRU(units=self.hidden_size, return_sequences=True, return_state=False)
         
         # return sequence because we need timesteps which is basically our `window`
         # . - we treat a sequence of words as a time-series data.
 
         # Define classification layer(s) (LOGIT OUTPUT)
         self.classifier = tf.keras.Sequential(
-            [tf.keras.layers.Dense(self.hidden_size), 
+            [tf.keras.layers.Dense(64), 
+             tf.keras.layers.Dense(128), 
             tf.keras.layers.Dense(self.vocab_size)])
         # can add multiple layers
 
