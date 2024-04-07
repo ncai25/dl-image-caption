@@ -58,8 +58,8 @@ class ImageCaptionModel(tf.keras.Model):
        
             gradients = tape.gradient(loss, self.trainable_variables)
             self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
-            # accuracy = self.accuracy_function(tf.cast(probs, tf.int64), tf.cast(decoder_labels,tf.int64), mask) 
-            accuracy = self.accuracy_function(tf.cast(probs, tf.float32), tf.cast(decoder_labels,tf.float32), mask) 
+            accuracy = self.accuracy_function(tf.cast(probs, tf.int64), tf.cast(decoder_labels,tf.int64), mask) 
+            # accuracy = self.accuracy_function(tf.cast(probs, tf.float32), tf.cast(decoder_labels,tf.float32), mask) 
 
             total_loss += loss 
             total_seen += num_predictions
