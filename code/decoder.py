@@ -27,18 +27,14 @@ class RNNDecoder(tf.keras.layers.Layer):
         # Define english embedding layer:
         self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embed_size)
 
-
-
         # Define decoder layer that handles language and image context:     
         self.decoder = tf.keras.layers.GRU(units=self.hidden_size, return_sequences=True, return_state=False)
-        
-        # return sequence because we need timesteps which is basically our `window`
-        # . - we treat a sequence of words as a time-series data.
+        # return the full sequence of outputs
 
         # Define classification layer(s) (LOGIT OUTPUT)
         self.classifier = tf.keras.Sequential(
-            [tf.keras.layers.Dense(64), 
-             tf.keras.layers.Dense(128), 
+            [tf.keras.layers.Dense(self.hidden_size, activation='relu'), 
+             tf.keras.layers.Dense(128, activation='relu'), 
             tf.keras.layers.Dense(self.vocab_size)])
         # can add multiple layers
 
@@ -51,7 +47,7 @@ class RNNDecoder(tf.keras.layers.Layer):
 
         image_embed = self.image_embedding(encoded_images)
         caption_embed = self.embedding(captions)
-        decoder_output = self.decoder(inputs=caption_embed, initial_state = image_embed)
+        decoder_output = self.decoder(inputs=caption_embed, initial_state =[image_embed])
         logits = self.classifier(decoder_output)
         return logits
 
