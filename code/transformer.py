@@ -111,11 +111,11 @@ class AttentionHead(tf.keras.layers.Layer):
         # - Apply the attention matrix to the values.
 
         # -1 last axis of inputs, and 0 first exis of K 
-        K = tf.tensordot(inputs_for_keys, self.K, axes=[1, 0])  
+        K = tf.tensordot(inputs_for_keys, self.K, axes=1)  
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
-        V = tf.tensordot(inputs_for_values, self.V, axes=[1, 0] )
+        V = tf.tensordot(inputs_for_values, self.V, axes=1 )
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
-        Q = tf.tensordot(inputs_for_queries, self.Q, axes=[1, 0] )
+        Q = tf.tensordot(inputs_for_queries, self.Q, axes=1)
 
         atten_mtx = self.attn_mtx([Q, K]) # []
         print(tf.shape(atten_mtx.shape))
