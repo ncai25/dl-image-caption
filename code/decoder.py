@@ -14,7 +14,6 @@ class RNNDecoder(tf.keras.layers.Layer):
         self.hidden_size = hidden_size
         self.window_size = window_size
         self.embed_size = 32
-
         # TODO:
         # Now we will define image and word embedding, decoder, and classification layers
 
@@ -22,11 +21,11 @@ class RNNDecoder(tf.keras.layers.Layer):
         # with the models hidden size
         self.image_embedding = tf.keras.Sequential([
             tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
-            tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu)])
+            tf.keras.layers.Dense(self.hidden_size, activation='relu')])
 
         # Define english embedding layer:
-        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embed_size)
-
+        self.embedding = tf.keras.layers.Embedding(input_dim=self.vocab_size, output_dim=self.hidden_size)
+        # self.embedding = tf.keras.layers.Embedding(input_dim=self.vocab_size, output_dim=self.embed_size)
         # Define decoder layer that handles language and image context:     
         self.decoder = tf.keras.layers.GRU(units=self.hidden_size, return_sequences=True, return_state=False)
         # return the full sequence of outputs
@@ -44,10 +43,9 @@ class RNNDecoder(tf.keras.layers.Layer):
         # 1) Embed the encoded images into a vector of the correct dimension for initial state
         # 2) Pass your english sentance embeddings, and the image embeddings, to your decoder 
         # 3) Apply dense layer(s) to the decoder to generate prediction **logits**
-
         image_embed = self.image_embedding(encoded_images)
         caption_embed = self.embedding(captions)
-        decoder_output = self.decoder(inputs=caption_embed, initial_state =[image_embed])
+        decoder_output = self.decoder(inputs=caption_embed, initial_state=image_embed)
         logits = self.classifier(decoder_output)
         return logits
 
