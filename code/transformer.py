@@ -34,8 +34,7 @@ class AttentionMatrix(tf.keras.layers.Layer):
         
         if self.use_mask == True: 
             atten_weights += atten_mask
-        
-
+    
         atten_matrix = tf.nn.softmax(atten_weights)
         return atten_matrix
     
@@ -113,15 +112,11 @@ class AttentionHead(tf.keras.layers.Layer):
         # -1 last axis of inputs, and 0 first exis of K 
         K = tf.tensordot(inputs_for_keys, self.K, axes=1)  
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
-        V = tf.tensordot(inputs_for_values, self.V, axes=1 )
+        V = tf.tensordot(inputs_for_values, self.V, axes=1)
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
         Q = tf.tensordot(inputs_for_queries, self.Q, axes=1)
 
-        atten_mtx = self.attn_mtx((K, Q)) # []
-        # print(atten_mtx.shape())
-        #     # shape: [batch_size, Query_WINDOW_SIZE, KEY_WINDOW_SIZE]
-        # print(V.shape())
-        #     # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
+        atten_mtx = self.attn_mtx((K, Q)) # ()
 
         result = atten_mtx @ V
         return result
@@ -191,7 +186,7 @@ class TransformerBlock(tf.keras.layers.Layer):
         :return: tensor of shape [BATCH_SIZE x INPUT_SEQ_LENGTH x EMBEDDING_SIZE ]
         """
 
-        masked_att = self.self_atte(inputs, inputs) # both key and query
+        masked_att = self.self_atten(inputs, inputs) # both key and query
         residual = masked_att + inputs # self.add = tf.keras.layers.Add() tk
         normalized_masked_att = self.layer_norm(residual)
 
