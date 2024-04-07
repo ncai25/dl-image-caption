@@ -99,7 +99,6 @@ class ImageCaptionModel(tf.keras.Model):
             batch_image_features = test_image_features[start:end, :]
             decoder_input = test_captions[start:end, :-1]
             decoder_labels = test_captions[start:end, 1:]
-            print(decoder_labels)
 
             ## Perform a no-training forward pass. Make sure to factor out irrelevant labels.
             probs = self(batch_image_features, decoder_input)
@@ -120,6 +119,7 @@ class ImageCaptionModel(tf.keras.Model):
 
         print()        
         return avg_prp, avg_acc
+
     
     def get_config(self):
         base_config = super().get_config()
