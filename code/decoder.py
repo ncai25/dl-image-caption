@@ -33,8 +33,8 @@ class RNNDecoder(tf.keras.layers.Layer):
 
         # Define classification layer(s) (LOGIT OUTPUT)
         self.classifier = tf.keras.Sequential(
-            [tf.keras.layers.Dense(self.hidden_size, activation='relu'), 
-             tf.keras.layers.Dense(128, activation='relu'), 
+            [tf.keras.layers.Dense(self.hidden_size), 
+             tf.keras.layers.Dense(128), 
             tf.keras.layers.Dense(self.vocab_size)])
         # can add multiple layers
 
