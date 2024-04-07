@@ -25,7 +25,9 @@ class RNNDecoder(tf.keras.layers.Layer):
             tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu)])
 
         # Define english embedding layer:
-        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embed_size)
+        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.hidden_size)
+        # self.embedding = tf.keras.layers.Embedding(self.vocab_size, embed_size)
+
 
         # Define decoder layer that handles language and image context:     
         self.decoder = tf.keras.layers.GRU(units=self.hidden_size, return_sequences=True, return_state=False)
