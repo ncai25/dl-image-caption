@@ -118,9 +118,9 @@ class AttentionHead(tf.keras.layers.Layer):
         Q = tf.tensordot(inputs_for_queries, self.Q, axes=1)
 
         atten_mtx = self.attn_mtx([Q, K]) # []
-        print(tf.shape(atten_mtx.shape))
+        print(atten_mtx.shape.shape())
             # shape: [batch_size, Query_WINDOW_SIZE, KEY_WINDOW_SIZE]
-        print(tf.shape(V))
+        print(V.shape())
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
 
         result = tf.matmul(atten_mtx, V)
