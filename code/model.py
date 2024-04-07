@@ -111,7 +111,8 @@ class ImageCaptionModel(tf.keras.Model):
             ## Perform a no-training forward pass. Make sure to factor out irrelevant labels.
             probs = self(batch_image_features, decoder_input)
             mask = decoder_labels != padding_index
-            num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
+            # num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
+            num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
             loss = self.loss_function(probs, decoder_labels, mask)
             accuracy = self.accuracy_function(probs, decoder_labels, mask)
 
