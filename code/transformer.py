@@ -30,12 +30,13 @@ class AttentionMatrix(tf.keras.layers.Layer):
         mask = tf.convert_to_tensor(value=mask_vals, dtype=tf.float32)
         atten_mask = tf.tile(tf.reshape(mask, [-1, window_size_queries, window_size_keys]), [tf.shape(input=K)[0], 1, 1])
 
-        atten_weights = tf.matmul(Q, K, transpose_b=True)
+        atten_weights = tf.matmul(Q, K, transpose_b=True) / math.sqrt(K.get_shape()[2])
         
         if self.use_mask == True: 
             atten_weights += atten_mask
         
-        atten_matrix = tf.nn.softmax(atten_weights, axis=-1)
+
+        atten_matrix = tf.nn.softmax(atten_weights)
         return atten_matrix
     
         # atten_weight shape [batch_size, window_size_query/num query, num keys]
@@ -114,17 +115,18 @@ class AttentionHead(tf.keras.layers.Layer):
         K = tf.tensordot(inputs_for_keys, self.K, axes=[-1, 0])  
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
         V = tf.tensordot(inputs_for_values, self.V, axes=[-1, 0] )
-            # shape: [batch_size x Value_WINDOW_SIZE x output_size]
+            # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
         Q = tf.tensordot(inputs_for_queries, self.Q, axes=[-1, 0] )
 
         atten_mtx = self.attn_mtx([Q, K]) # []
         print(tf.shape(atten_mtx.shape))
+            # shape: [batch_size, Query_WINDOW_SIZE, KEY_WINDOW_SIZE]
         print(tf.shape(V))
-            # shape: [batch_size, Query_WINDOW_SIZE, Key_WINDOW_SIZE]
+            # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
 
         result = tf.matmul(atten_mtx, V)
         return result
-            # shape: [BATCH_SIZE x QUERY_WINDOW_SIZE x output_size ]
+            # shape: [BATCH_SIZE x QUERY_WINDOW_SIZE x output_size]
 
 
 class MultiHeadedAttention(tf.keras.layers.Layer):
