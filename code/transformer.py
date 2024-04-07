@@ -123,7 +123,7 @@ class AttentionHead(tf.keras.layers.Layer):
         print(V.shape())
             # shape: [batch_size x KEY_WINDOW_SIZE x output_size]
 
-        result = tf.matmul(atten_mtx, V)
+        result = atten_mtx @ V
         return result
             # shape: [BATCH_SIZE x QUERY_WINDOW_SIZE x output_size]
 
