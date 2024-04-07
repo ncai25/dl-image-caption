@@ -186,7 +186,7 @@ class TransformerBlock(tf.keras.layers.Layer):
         :return: tensor of shape [BATCH_SIZE x INPUT_SEQ_LENGTH x EMBEDDING_SIZE ]
         """
 
-        masked_att = self.self_atten(inputs, inputs) # both key and query
+        masked_att = self.self_atten(inputs, inputs, inputs) #  key and query and values
         residual = masked_att + inputs # self.add = tf.keras.layers.Add() tk
         normalized_masked_att = self.layer_norm(residual)
 
