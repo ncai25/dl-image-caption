@@ -85,7 +85,7 @@ class AttentionHead(tf.keras.layers.Layer):
         )
         self.attn_mtx = AttentionMatrix(self.use_mask)
 
-        # initializer? 
+        # initializer? tk 
 
         # input size represents the dimensionality of the embeddings 
         # output size -> desired (output_size vector)
@@ -118,6 +118,8 @@ class AttentionHead(tf.keras.layers.Layer):
         Q = tf.tensordot(inputs_for_queries, self.Q, axes=[-1, 0] )
 
         atten_mtx = self.attn_mtx([Q, K]) # []
+        print(tf.shape(atten_mtx.shape))
+        print(tf.shape(V))
             # shape: [batch_size, Query_WINDOW_SIZE, Key_WINDOW_SIZE]
 
         result = tf.matmul(atten_mtx, V)
