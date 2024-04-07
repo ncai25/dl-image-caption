@@ -21,7 +21,7 @@ class RNNDecoder(tf.keras.layers.Layer):
         # Define feed forward layer(s) to embed image features into a vector 
         # with the models hidden size
         self.image_embedding = tf.keras.Sequential([
-            tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
+            # tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
             tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu)])
 
         # Define english embedding layer:
@@ -32,9 +32,9 @@ class RNNDecoder(tf.keras.layers.Layer):
         # return the full sequence of outputs
 
         # Define classification layer(s) (LOGIT OUTPUT)
-        self.classifier = tf.keras.Sequential(
-            [tf.keras.layers.Dense(self.hidden_size), 
-             tf.keras.layers.Dense(128), 
+        self.classifier = tf.keras.Sequential([
+            #  tf.keras.layers.Dense(self.hidden_size), 
+            #  tf.keras.layers.Dense(128), 
             tf.keras.layers.Dense(self.vocab_size)])
         # can add multiple layers
 

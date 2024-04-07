@@ -36,7 +36,6 @@ class ImageCaptionModel(tf.keras.Model):
         ##       range of indices spanning # of training entries, then tf.gather) 
         ##       to make training smoother over multiple epochs.
 
-        
         total_loss = total_seen = total_correct = 0
         indices = tf.random.shuffle(tf.range(len(train_captions)))
         num_batches = int(len(train_captions) / batch_size)
@@ -67,8 +66,7 @@ class ImageCaptionModel(tf.keras.Model):
 
         avg_loss = float(total_loss / total_seen)
         avg_acc = float(total_correct / total_seen)
-        # avg_prp = np.exp(avg_loss)
-        avg_prp = tf.cast(np.exp(avg_loss), tf.float32)
+        avg_prp = np.exp(avg_loss)
         print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')    
         return avg_loss, avg_acc, avg_prp
 
@@ -107,7 +105,6 @@ class ImageCaptionModel(tf.keras.Model):
             probs = self(batch_image_features, decoder_input)
             mask = decoder_labels != padding_index
             num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
-            # num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
             loss = self.loss_function(probs, decoder_labels, mask)
             accuracy = self.accuracy_function(probs, decoder_labels, mask)
 
@@ -118,8 +115,7 @@ class ImageCaptionModel(tf.keras.Model):
 
             avg_loss = float(total_loss / total_seen)
             avg_acc = float(total_correct / total_seen)
-            # avg_prp = np.exp(avg_loss)
-            avg_prp = tf.cast(np.exp(avg_loss), tf.float32)
+            avg_prp = np.exp(avg_loss)
             print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')
 
         print()        
