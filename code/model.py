@@ -54,25 +54,27 @@ class ImageCaptionModel(tf.keras.Model):
             with tf.GradientTape() as tape:
                 probs = self(batch_image_features, decoder_input)
                 mask = decoder_labels != padding_index
-                # num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
-                num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
+                num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
+                # num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
                 loss = self.loss_function(probs, decoder_labels, mask) # losses.append(loss)
        
         ## NOTE: make sure you are calculating gradients and optimizing as appropriate
         ##       (similar to batch_step from HW2)
             gradients = tape.gradient(loss, self.trainable_variables)
             self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
-            accuracy = self.accuracy_function(probs, decoder_labels, mask)
+            # accuracy = self.accuracy_function(probs, decoder_labels, mask)
+            accuracy = self.accuracy_function(tf.cast(probs, tf.int64), tf.cast(decoder_labels,tf.int64), mask) 
+            #errors if tf.int64 isn't cast on decoder labels
 
             ## Compute and report on aggregated statistics
             total_loss += loss 
             total_seen += num_predictions
             total_correct += num_predictions * accuracy
 
-        # avg_loss = float(total_loss / total_seen)
-        # avg_acc = float(total_correct / total_seen)
-        avg_loss = tf.cast((total_loss / total_seen), tf.int64)
-        avg_acc = tf.cast((total_correct / total_seen), tf.int64)
+        avg_loss = float(total_loss / total_seen)
+        avg_acc = float(total_correct / total_seen)
+        # avg_loss = tf.cast((total_loss / total_seen), tf.int64)
+        # avg_acc = tf.cast((total_correct / total_seen), tf.int64)
         avg_prp = np.exp(avg_loss)
         print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')    
         
@@ -112,8 +114,8 @@ class ImageCaptionModel(tf.keras.Model):
             ## Perform a no-training forward pass. Make sure to factor out irrelevant labels.
             probs = self(batch_image_features, decoder_input)
             mask = decoder_labels != padding_index
-            # num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
-            num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
+            num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
+            # num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
             loss = self.loss_function(probs, decoder_labels, mask)
             accuracy = self.accuracy_function(probs, decoder_labels, mask)
 
@@ -122,10 +124,10 @@ class ImageCaptionModel(tf.keras.Model):
             total_seen += num_predictions
             total_correct += num_predictions * accuracy
 
-        # avg_loss = float(total_loss / total_seen)
-        # avg_acc = float(total_correct / total_seen)
-            avg_loss = tf.cast((total_loss / total_seen), tf.int64)
-            avg_acc = tf.cast((total_correct / total_seen), tf.int64)
+            avg_loss = float(total_loss / total_seen)
+            avg_acc = float(total_correct / total_seen)
+            # avg_loss = tf.cast((total_loss / total_seen), tf.int64)
+            # avg_acc = tf.cast((total_correct / total_seen), tf.int64)
             avg_prp = np.exp(avg_loss)
             print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')
 
