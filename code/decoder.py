@@ -25,7 +25,7 @@ class RNNDecoder(tf.keras.layers.Layer):
             tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu)])
 
         # Define english embedding layer:
-        self.embedding = tf.keras.layers.Embedding(self.vocab_size, embed_size)
+        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embed_size)
 
 
 
