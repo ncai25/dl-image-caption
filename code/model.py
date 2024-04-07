@@ -118,9 +118,8 @@ class ImageCaptionModel(tf.keras.Model):
 
             avg_loss = float(total_loss / total_seen)
             avg_acc = float(total_correct / total_seen)
-            # avg_loss = tf.cast((total_loss / total_seen), tf.int64)
-            # avg_acc = tf.cast((total_correct / total_seen), tf.int64)
-            avg_prp = np.exp(avg_loss)
+            # avg_prp = np.exp(avg_loss)
+            avg_prp = tf.cast(np.exp(avg_loss), tf.float32)
             print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')
 
         print()        
