@@ -49,8 +49,6 @@ class RNNDecoder(tf.keras.layers.Layer):
 
         image_embed = self.image_embedding(encoded_images)
         caption_embed = self.embedding(captions)
-        # decoder_input = tf.concat([tf.expand_dims(image_embed, 1), caption_embed], axis=1)
-        # decoder_output = self.decoder(decoder_input)
         decoder_output = self.decoder(inputs=caption_embed, initial_state = image_embed)
         logits = self.classifier(decoder_output)
         return logits

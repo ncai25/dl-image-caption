@@ -52,7 +52,7 @@ class ImageCaptionModel(tf.keras.Model):
             decoder_labels = shuffled_captions[start:end, 1:]
 
             with tf.GradientTape() as tape:
-                probs = self(batch_image_features, decoder_input)
+                probs = self(tf.cast(batch_image_features, tf.floats32), tf.cast(decoder_input, tf.float32))
                 mask = decoder_labels != padding_index
                 num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
                 loss = self.loss_function(probs, decoder_labels, mask)
