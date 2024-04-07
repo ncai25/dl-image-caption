@@ -23,14 +23,12 @@ class AttentionMatrix(tf.keras.layers.Layer):
         window_size_queries = Q.get_shape()[1]  # window size of queries
         window_size_keys    = K.get_shape()[1]  # window size of keys
 
-
         ## Fill triangle below diagonal of matrix with negative infinity and top part with 0.
         ## This helps to avoid over-contribution, since adjacency matrix is symmetric across diagonal. 
         ## Tile this upward to be compatible with addition against computed attention scores.
         mask_vals = np.triu(np.ones((window_size_queries, window_size_keys)) * np.NINF, k=1)
         mask = tf.convert_to_tensor(value=mask_vals, dtype=tf.float32)
         atten_mask = tf.tile(tf.reshape(mask, [-1, window_size_queries, window_size_keys]), [tf.shape(input=K)[0], 1, 1])
-
 
         atten_weights = tf.matmul(Q, K, transpose_b=True)
         
@@ -119,7 +117,7 @@ class AttentionHead(tf.keras.layers.Layer):
             # shape: [batch_size x Value_WINDOW_SIZE x output_size]
         Q = tf.tensordot(inputs_for_queries, self.Q, axes=[-1, 0] )
 
-        atten_mtx = self.attn_mtx(Q, K) # []
+        atten_mtx = self.attn_mtx([Q, K]) # []
             # shape: [batch_size, Query_WINDOW_SIZE, Key_WINDOW_SIZE]
 
         result = tf.matmul(atten_mtx, V)
