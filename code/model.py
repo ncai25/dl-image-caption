@@ -54,7 +54,8 @@ class ImageCaptionModel(tf.keras.Model):
             with tf.GradientTape() as tape:
                 probs = self(batch_image_features, decoder_input)
                 mask = decoder_labels != padding_index
-                num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
+                # num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
+                num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
                 loss = self.loss_function(probs, decoder_labels, mask) # losses.append(loss)
        
         ## NOTE: make sure you are calculating gradients and optimizing as appropriate
@@ -121,8 +122,10 @@ class ImageCaptionModel(tf.keras.Model):
             total_seen += num_predictions
             total_correct += num_predictions * accuracy
 
-            avg_loss = float(total_loss / total_seen)
-            avg_acc = float(total_correct / total_seen)
+        # avg_loss = float(total_loss / total_seen)
+        # avg_acc = float(total_correct / total_seen)
+            avg_loss = tf.cast((total_loss / total_seen), tf.int64)
+            avg_acc = tf.cast((total_correct / total_seen), tf.int64)
             avg_prp = np.exp(avg_loss)
             print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')
 
