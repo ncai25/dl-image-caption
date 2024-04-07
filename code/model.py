@@ -36,83 +36,41 @@ class ImageCaptionModel(tf.keras.Model):
         ##       range of indices spanning # of training entries, then tf.gather) 
         ##       to make training smoother over multiple epochs.
 
-        num_batches = int(len(train_captions) / batch_size)
+        
         total_loss = total_seen = total_correct = 0
+        indices = tf.random.shuffle(tf.range(len(train_captions)))
+        num_batches = int(len(train_captions) / batch_size)
 
-        indices = tf.random.shuffle(range(0, train_captions.shape[0]))
-        shuffled_captions = tf.gather(train_captions, indices) 
-        shuffled_image_features = tf.gather(train_image_features, indices)
+        shuffled_features = tf.gather(train_image_features, indices) 
+        shuffled_captions = tf.gather(train_captions, indices)
 
         for index, end in enumerate(range(batch_size, len(train_captions)+1, batch_size)):
-            ## Get the current batch of data, making sure to try to predict the next word
             start = end - batch_size
-            batch_image_features = shuffled_image_features[start:end, :]
+            batch_image_features = shuffled_features[start:end, :]
             decoder_input = shuffled_captions[start:end, :-1]
             decoder_labels = shuffled_captions[start:end, 1:]
 
-            with tf.GradientTape() as tape: 
+            with tf.GradientTape() as tape:
                 probs = self(batch_image_features, decoder_input)
                 mask = decoder_labels != padding_index
                 num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
-                loss = self.loss_function(probs, decoder_labels, mask)
-
+                loss = self.loss_function(probs, decoder_labels, mask) # losses.append(loss)
+       
             gradients = tape.gradient(loss, self.trainable_variables)
             self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
-            accuracy = self.accuracy_function(tf.cast(probs, tf.int64), tf.cast(decoder_labels,tf.int64), mask) #errors if tf.int64 isn't cast on decoder labels
+            # accuracy = self.accuracy_function(tf.cast(probs, tf.int64), tf.cast(decoder_labels,tf.int64), mask) 
+            accuracy = self.accuracy_function(tf.cast(probs, tf.float32), tf.cast(decoder_labels,tf.float32), mask) 
 
-
-            total_loss += loss
+            total_loss += loss 
             total_seen += num_predictions
             total_correct += num_predictions * accuracy
 
         avg_loss = float(total_loss / total_seen)
         avg_acc = float(total_correct / total_seen)
-        avg_prp = np.exp(avg_loss)      
-        print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')  
-        return avg_loss, avg_acc, avg_prp
-        # total_loss = total_seen = total_correct = 0
-
-        # indices = tf.random.shuffle(tf.range(len(train_captions)))
-        # num_batches = int(len(train_captions) / batch_size)
-
-        # shuffled_features = tf.gather(train_image_features, indices) 
-        # shuffled_captions = tf.gather(train_captions, indices)
-
-        # total_loss = total_seen = total_correct = 0
-        # for index, end in enumerate(range(batch_size, len(train_captions)+1, batch_size)):
-        #     start = end - batch_size
-        #     batch_image_features = shuffled_features[start:end, :]
-        #     decoder_input = shuffled_captions[start:end, :-1]
-        #     decoder_labels = shuffled_captions[start:end, 1:]
-
-        #     with tf.GradientTape() as tape:
-        #         probs = self(batch_image_features, decoder_input)
-        #         mask = decoder_labels != padding_index
-        #         num_predictions = tf.reduce_sum(tf.cast(mask, tf.float32))
-        #         # num_predictions = tf.reduce_sum(tf.cast(mask, tf.int64))
-        #         loss = self.loss_function(probs, decoder_labels, mask) # losses.append(loss)
-       
-        # ## NOTE: make sure you are calculating gradients and optimizing as appropriate
-        # ##       (similar to batch_step from HW2)
-        #     gradients = tape.gradient(loss, self.trainable_variables)
-        #     self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
-        #     # accuracy = self.accuracy_function(probs, decoder_labels, mask)
-        #     accuracy = self.accuracy_function(tf.cast(probs, tf.int64), tf.cast(decoder_labels,tf.int64), mask) 
-        #     # errors if tf.int64 isn't cast on decoder labels
-
-        #     ## Compute and report on aggregated statistics
-        #     total_loss += loss 
-        #     total_seen += num_predictions
-        #     total_correct += num_predictions * accuracy
-
-        # avg_loss = float(total_loss / total_seen)
-        # avg_acc = float(total_correct / total_seen)
-        # # avg_loss = tf.cast((total_loss / total_seen), tf.int64)
-        # # avg_acc = tf.cast((total_correct / total_seen), tf.int64)
         # avg_prp = np.exp(avg_loss)
-        # print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')    
-        
-        # return avg_loss, avg_acc, avg_prp
+        avg_prp = tf.cast(np.exp(avg_loss), tf.float32)
+        print(f"\r[Valid {index+1}/{num_batches}]\t loss={avg_loss:.3f}\t acc: {avg_acc:.3f}\t perp: {avg_prp:.3f}", end='')    
+        return avg_loss, avg_acc, avg_prp
 
     def test(self, test_captions, test_image_features, padding_index, batch_size=30):
         """
