@@ -193,7 +193,8 @@ class TransformerBlock(tf.keras.layers.Layer):
         normalized_masked_att = self.layer_norm(masked_att)
         # print(normalized_masked_att)
 
-        unmasked_att = self.self_context_atten(context_sequence, context_sequence, normalized_masked_att) # tk what does it mean, unmasked 
+        unmasked_att = self.self_context_atten(context_sequence, context_sequence, normalized_masked_att) 
+        # tk which query
         unmasked_att += masked_att # adding the previous thing? tk
         unmasked_att = self.layer_norm(unmasked_att)
         
@@ -230,7 +231,7 @@ class PositionalEncoding(tf.keras.layers.Layer):
         ## TODO: Implement Component
 
         ## Embed labels into an optimizable embedding space
-        self.embedding = tf.keras.layers.embedding(input_dim=vocab_size, output_dim=embed_size)
+        self.embedding = tf.keras.layers.Embedding(input_dim=vocab_size, output_dim=embed_size)
         # tk embed size / hidden size -> in decoder
 
         ## Implement sinosoidal positional encoding: offset by varying sinosoidal frequencies. 
