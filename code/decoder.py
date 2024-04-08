@@ -51,9 +51,7 @@ class RNNDecoder(tf.keras.layers.Layer):
 ########################################################################################
 
 class TransformerDecoder(tf.keras.Model):
-
     def __init__(self, vocab_size, hidden_size, window_size, **kwargs):
-
         super().__init__(**kwargs)
         self.vocab_size  = vocab_size
         self.hidden_size = hidden_size
@@ -64,10 +62,12 @@ class TransformerDecoder(tf.keras.Model):
         # Define feed forward layer(s) to embed image features into a vector 
         self.image_embedding = tf.keras.Sequential([
             # tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
-            tf.keras.layers.Dense(self.hidden_size, activation='relu')])
+            tf.keras.layers.Dense(self.hidden_size)
+            ]) # relu - making negative -> zero
         
         # Define positional encoding to embed and offset layer for language:
-        self.positional_encoding = PositionalEncoding(self.vocab_size, self.hidden_size, self.window_size)
+        # vocab_size, embed_size, window_size
+        self.encoding = PositionalEncoding(self.vocab_size, self.hidden_size, self.window_size)
         
         # Define transformer decoder layer:
         self.decoder = TransformerBlock(emb_sz=self.hidden_size, multiheaded=False, **kwargs)
@@ -84,11 +84,8 @@ class TransformerDecoder(tf.keras.Model):
         # 2) Pass the captions through your positional encoding layer
         # 3) Pass the english embeddings and the image sequences to the decoder
         # 4) Apply dense layer(s) to the decoder out to generate **logits**
-        image_embed = self.image_embedding(encoded_images)
-        # image_embed = tf.reshape(image_embed, [1])
-        image_embed = tf.expand_dims(image_embed, axis=1)
-
-        caption_embed = self.positional_encoding(captions)
+        image_embed = self.image_embedding(tf.expand_dims(encoded_images, 1))
+        caption_embed = self.encoding(captions)
         decoder_output = self.decoder(inputs=caption_embed, context_sequence=image_embed)
         logits = self.classifier(decoder_output)
         return logits
