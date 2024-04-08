@@ -30,7 +30,8 @@ class AttentionMatrix(tf.keras.layers.Layer):
         mask = tf.convert_to_tensor(value=mask_vals, dtype=tf.float32)
         atten_mask = tf.tile(tf.reshape(mask, [-1, window_size_queries, window_size_keys]), [tf.shape(input=K)[0], 1, 1])
 
-        atten_weights = tf.matmul(Q, K, transpose_b=True) / math.sqrt(K.get_shape()[2])
+        atten_weights = tf.matmul(Q, K, transpose_b=True) / math.sqrt(K.get_shape()[2]) 
+        # dimension is embedding_size
         
         if self.use_mask == True: 
             atten_weights += atten_mask
