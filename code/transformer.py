@@ -158,7 +158,9 @@ class TransformerBlock(tf.keras.layers.Layer):
         # 1) Define the Feed Forward, self-attention, encoder-decoder-attention, and layer normalization layers
         # 2) For 2470 students, use multiheaded attention
 
-        self.ff_layer = tf.keras.layers.Dense(emb_sz, activation='relu'),
+        self.ff_layer = tf.keras.Sequential([
+            tf.keras.layers.Dense(emb_sz, activation='relu'),
+            ])
 
         self.self_atten         = AttentionHead(emb_sz, emb_sz, True)  if not multiheaded else MultiHeadedAttention(emb_sz, True)
         self.self_context_atten = AttentionHead(emb_sz, emb_sz, False) if not multiheaded else MultiHeadedAttention(emb_sz, False)
@@ -186,15 +188,14 @@ class TransformerBlock(tf.keras.layers.Layer):
         :return: tensor of shape [BATCH_SIZE x INPUT_SEQ_LENGTH x EMBEDDING_SIZE ]
         """
 
-        masked_att = self.self_atten(inputs, inputs, inputs) #  key and query and values
-        residual = masked_att + inputs # self.add = tf.keras.layers.Add() tk
-        normalized_masked_att = self.layer_norm(residual)
-
+        masked_att = self.self_atten(inputs, inputs, inputs) #  key values query
+        masked_att += inputs # self.add = tf.keras.layers.Add() tk
+        normalized_masked_att = self.layer_norm(masked_att)
         print(normalized_masked_att)
+
         unmasked_att = self.self_context_atten(context_sequence, context_sequence, normalized_masked_att) # tk what does it mean, unmasked 
         unmasked_att += masked_att # adding the previous thing? tk
         unmasked_att = self.layer_norm(unmasked_att)
-        print(unmasked_att)
         
         ff_att = self.ff_layer(unmasked_att)
         ff_att += unmasked_att
