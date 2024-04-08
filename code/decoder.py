@@ -62,6 +62,7 @@ class TransformerDecoder(tf.keras.Model):
         # Define feed forward layer(s) to embed image features into a vector 
         self.image_embedding = tf.keras.Sequential([
             # tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
+            tf.keras.layers.Dense(self.hidden_size),
             tf.keras.layers.Dense(self.hidden_size)
             ]) # relu - making negative -> zero
         
