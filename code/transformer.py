@@ -226,7 +226,6 @@ class PositionalEncoding(tf.keras.layers.Layer):
     def __init__(self, vocab_size, embed_size, window_size):
         super().__init__()
         self.embed_size = embed_size
-        self.window_size = window_size
 
         ## TODO: Implement Component
 
@@ -239,9 +238,11 @@ class PositionalEncoding(tf.keras.layers.Layer):
         self.pos_encoding = positional_encoding(window_size, embed_size) #tk length=2048, window 20
 
     def call(self, x):
+        length = tf.shape(x)[1]
         x = self.embedding(x)
         x *= tf.math.sqrt(tf.cast(self.embed_size, tf.float32))
-        x = x + self.pos_encoding[tf.newaxis, :self.window_size, :] # tk self.window_size = window_size? 
+
+        x = x + self.pos_encoding[tf.newaxis, :length, :] # tk self.window_size = window_size? 
 
         ## TODO: Get embeddings and and scale them by sqrt of embedding size, and add positional encoding.
         return x
