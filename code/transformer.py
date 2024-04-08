@@ -199,8 +199,10 @@ class TransformerBlock(tf.keras.layers.Layer):
         unmasked_att = self.layer_norm(unmasked_att)
         
         ff_att = self.ff_layer(unmasked_att)
+        print(ff_att)
         ff_att += unmasked_att
         ff_att = self.layer_norm(ff_att)
+        print(ff_att)
 
         return tf.nn.relu(ff_att)
 
