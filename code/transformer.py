@@ -190,9 +190,11 @@ class TransformerBlock(tf.keras.layers.Layer):
         residual = masked_att + inputs # self.add = tf.keras.layers.Add() tk
         normalized_masked_att = self.layer_norm(residual)
 
+        print(normalized_masked_att)
         unmasked_att = self.self_context_atten(context_sequence, context_sequence, normalized_masked_att) # tk what does it mean, unmasked 
         unmasked_att += masked_att # adding the previous thing? tk
         unmasked_att = self.layer_norm(unmasked_att)
+        print(unmasked_att)
         
         ff_att = self.ff_layer(unmasked_att)
         ff_att += unmasked_att
