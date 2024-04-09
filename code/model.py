@@ -90,10 +90,10 @@ class ImageCaptionModel(tf.keras.Model):
 
             # NOTE: 
             # - The captions passed to the decoder should have the last token in the window removed:
-            #	 [<START> student working on homework <STOP>] --> [<START> student working on homework]
+            #    [<START> student working on homework <STOP>] --> [<START> student working on homework]
             #
             # - When computing loss, the decoder labels should have the first word removed:
-            #	 [<START> student working on homework <STOP>] --> [student working on homework <STOP>]
+            #    [<START> student working on homework <STOP>] --> [student working on homework <STOP>]
 
             ## Get the current batch of data, making sure to try to predict the next word
             start = end - batch_size

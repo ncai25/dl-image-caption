@@ -161,7 +161,6 @@ class TransformerBlock(tf.keras.layers.Layer):
 
         self.ff_layer = tf.keras.Sequential([
             tf.keras.layers.Dense(2048, activation='relu'),
-
             tf.keras.layers.Dense(emb_sz),
             ])
 
