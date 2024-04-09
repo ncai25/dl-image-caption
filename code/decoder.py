@@ -62,7 +62,7 @@ class TransformerDecoder(tf.keras.Model):
         # Define feed forward layer(s) to embed image features into a vector 
         self.image_embedding = tf.keras.Sequential([
             # tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
-            tf.keras.layers.Dense(self.hidden_size, activation='relu'), 
+            tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu), 
             tf.keras.layers.Dense(self.hidden_size)
             ]) # relu - making negative -> zero
         
@@ -75,8 +75,8 @@ class TransformerDecoder(tf.keras.Model):
 
         # Define classification layer(s) (LOGIT OUTPUT)
         self.classifier = tf.keras.Sequential([
-            tf.keras.layers.Dense(self.hidden_size), 
-            tf.keras.layers.Dense(128), 
+            tf.keras.layers.Dense(self.hidden_size, activation=tf.nn.leaky_relu), 
+            tf.keras.layers.Dense(128, activation=tf.nn.leaky_relu), 
             tf.keras.layers.Dense(self.vocab_size)])
 
     def call(self, encoded_images, captions):
