@@ -84,7 +84,7 @@ class AttentionHead(tf.keras.layers.Layer):
             trainable=True, 
             name="V",
         )
-        self.attn_mtx = AttentionMatrix(self.use_mask)
+        self.attn_mtx = AttentionMatrix(use_mask=self.use_mask)
 
 
         # input size represents the dimensionality of the embeddings 
@@ -160,13 +160,15 @@ class TransformerBlock(tf.keras.layers.Layer):
         # 2) For 2470 students, use multiheaded attention
 
         self.ff_layer = tf.keras.Sequential([
-            tf.keras.layers.Dense(2048, activation='relu'),
-            tf.keras.layers.Dense(emb_sz),
+            # tf.keras.layers.Dense(2048, activation='relu'),
+            tf.keras.layers.Dense(emb_sz, activation='relu'),
             ])
 
         self.self_atten         = AttentionHead(emb_sz, emb_sz, True)  if not multiheaded else MultiHeadedAttention(emb_sz, True)
         self.self_context_atten = AttentionHead(emb_sz, emb_sz, False) if not multiheaded else MultiHeadedAttention(emb_sz, False)
-        self.layer_norm = tf.keras.layers.LayerNormalization(axis=-1)
+        # self.layer_norm = tf.keras.layers.LayerNormalization(axis=-1)
+        self.layer_norm = tf.keras.layers.LayerNormalization()
+
 
     @tf.function
     def call(self, inputs, context_sequence):
