@@ -5,5 +5,5 @@ Your README should contain your perplexity, accuracy, and any bugs.
 RNN (acc >30% perp ≤ 20)
 acc: 0.344	 perp: 16.065
 
-Transformer (acc ~ 35%, perp ~ 15)
+Transformer (acc ~ 35%, perp ≤ 18)
 acc: 0.345	 perp: 18.58841
