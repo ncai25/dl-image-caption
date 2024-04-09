@@ -6,4 +6,4 @@ RNN (acc >30% perp ≤ 20)
 acc: 0.344	 perp: 16.065
 
 Transformer (acc ~ 35%, perp ≤ 18)
-acc: 0.407	 perp: 15.56946
+acc: 0.376	 perp: 16.76064
