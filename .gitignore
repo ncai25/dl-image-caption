@@ -3,3 +3,5 @@ data/
 #exclude model weights from git
 rnn_model/*
 transform_model/*
+
+.DS_Store
