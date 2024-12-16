@@ -276,7 +276,7 @@ def plot_decoder_text_attention(
         'include_layers': include_layers
     }
 
-    # require.js must be imported for Colab or JupyterLab:
+    # require.js must be ked for Colab or JupyterLab:
     if html_action == 'view':
         display(HTML('<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>'))
         display(HTML(vis_html))
