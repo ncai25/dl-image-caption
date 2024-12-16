@@ -36,7 +36,6 @@ class RNNDecoder(tf.keras.layers.Layer):
             tf.keras.layers.Dense(self.vocab_size)])
         # can add multiple layers
 
-
     def call(self, encoded_images, captions):
         # TODO:
         # 1) Embed the encoded images into a vector of the correct dimension for initial state

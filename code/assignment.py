@@ -11,7 +11,6 @@ from model import ImageCaptionModel, accuracy_function, loss_function
 from decoder import TransformerDecoder, RNNDecoder
 import transformer
 
-
 def parse_args(args=None):
     """ 
     Perform command-line argument parsing (other otherwise parse arguments with defaults). 
